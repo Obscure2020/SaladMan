@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.*;
 
 class Main {
@@ -7,9 +8,7 @@ class Main {
         String input = scan.nextLine();
         scan.close();
 
-        System.out.println();
-        System.out.println("Fantastic!");
-        System.out.println("[" + input + "]");
-        System.out.println("I have NO idea what to do with this junk.");
+        BigInteger data = new BigInteger(input, 16);
+        System.out.println("Base 10: " + data.toString(10));
     }
 }
