@@ -13,7 +13,7 @@ Product Name: SaladMan
 - Automatic Label Generation and Printing 
 - Reads DSGTIN+ and SGTIN+ RFID Data Automatically
 
-## Demonstration Video: 
+## Demonstration Video
 - Video Link goes here
  
 ## Presentation Video 
