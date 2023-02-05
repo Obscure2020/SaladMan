@@ -1,6 +1,3 @@
-
-
-
 Product Name: SaladMan
 - 
 
