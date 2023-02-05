@@ -257,11 +257,21 @@ public class Main extends JFrame {
         containersCount.setFont(standardFont);
         containersPanel.add(containersCount);
 
+        ImageIcon plusMinus = new ImageIcon("plusMinus.png");
+        JButton modifyInventory = new JButton("Modify Inventory", plusMinus);
+        modifyInventory.setFont(boldFont);
+        JPanel modifyPanel = new JPanel();
+        modifyPanel.setLayout(new BoxLayout(modifyPanel, BoxLayout.X_AXIS));
+        modifyPanel.setBorder(new EmptyBorder(0, 0, 4, 0));
+        modifyPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        modifyPanel.add(modifyInventory);
+
         //Add everything to the panel
         panel.add(Box.createVerticalGlue());
         panel.add(lettucePanel);
         panel.add(tomatoesPanel);
         panel.add(containersPanel);
+        panel.add(modifyPanel);
         panel.add(Box.createVerticalGlue());
 
         //Launch the Window
