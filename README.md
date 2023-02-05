@@ -1,7 +1,7 @@
-![saladmancopy](https://user-images.githubusercontent.com/84351411/216828702-7f603112-213b-40cf-8132-04558c9d2260.png)
 
 
-#Product Name: SaladMan
+
+Product Name: SaladMan
 - 
 
 ## Key Features
