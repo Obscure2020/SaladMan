@@ -1,12 +1,11 @@
 import java.util.*;
-import java.awt.Component;
 import java.math.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.*;
 
 public class Main extends JFrame {
@@ -291,10 +290,43 @@ public class Main extends JFrame {
         panel.add(printPanel);
         panel.add(Box.createVerticalGlue());
 
+        JFrame me = this;
         //Make the Buttons do things
         modifyInventory.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent ae){
-                //Do Something!
+                JDialog inputDialog = new JDialog(me, "Scan Input", false);
+                inputDialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                inputDialog.setSize(600, 300);
+                inputDialog.setLocationRelativeTo(null);
+                //Populate the Input Dialog with Stuff
+                JPanel inputPanel = new JPanel();
+                inputDialog.add(inputPanel);
+                inputPanel.setLayout(new BorderLayout(0, 4));
+                inputPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+                JTextArea inputBox = new JTextArea();
+                inputBox.setLineWrap(true);
+                JScrollPane inputScroll = new JScrollPane(inputBox);
+                inputScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                inputPanel.add(inputScroll, BorderLayout.CENTER);
+                JButton doneButton = new JButton("Done");
+                doneButton.setFont(standardFont);
+                inputPanel.add(doneButton, BorderLayout.SOUTH);
+                doneButton.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent ae){
+                        String[] inputLines = inputBox.getText().trim().split("\n");
+                        ArrayList<HashMap<String,String>> decodedInputs = new ArrayList<>(inputLines.length);
+                        for(String k : inputLines) decodedInputs.add(decodeRFID(new BigInteger(k, 16).toString(2)));
+                        inputDialog.dispose();
+                        for(HashMap<String,String> h : decodedInputs){
+                            String[] keys = h.keySet().stream().sorted().toList().toArray(new String[0]);
+                            for(String key : keys){
+                                System.out.println(key + ": " + h.get(key));
+                            }
+                            System.out.println("-----------------");
+                        }
+                    }
+                });
+                inputDialog.setVisible(true);
             }
         });
 
