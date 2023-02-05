@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.Font;
+import java.awt.event.*;
 
 public class Main extends JFrame {
     private static DateTimeFormatter humanFormat = DateTimeFormatter.ofPattern("MMMM d, uuuu");
@@ -198,8 +199,6 @@ public class Main extends JFrame {
         setResizable(true);
         setTitle("SaladMan v0.1");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(720, 720);
-        setLocationRelativeTo(null);
         LookAndFeel defaultLF = UIManager.getLookAndFeel();
         try{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -219,6 +218,7 @@ public class Main extends JFrame {
         }
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         add(panel);
 
         //Define Body Components
@@ -272,6 +272,7 @@ public class Main extends JFrame {
         ImageIcon labelsRoll = new ImageIcon("labelsRoll.png");
         JButton printLabels = new JButton("Print Labels", labelsRoll);
         printLabels.setFont(boldFont);
+        printLabels.setEnabled(false);
         JPanel printPanel = new JPanel();
         printPanel.setLayout(new BoxLayout(printPanel, BoxLayout.X_AXIS));
         printPanel.setBorder(new EmptyBorder(0, 0, 4, 0));
@@ -290,7 +291,16 @@ public class Main extends JFrame {
         panel.add(printPanel);
         panel.add(Box.createVerticalGlue());
 
+        //Make the Buttons do things
+        modifyInventory.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+                //Do Something!
+            }
+        });
+
         //Launch the Window
+        pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 }
