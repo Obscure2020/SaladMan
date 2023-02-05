@@ -250,7 +250,7 @@ public class Main extends JFrame {
         containersInfo.setFont(boldFont);
         JPanel containersPanel = new JPanel();
         containersPanel.setLayout(new BoxLayout(containersPanel, BoxLayout.X_AXIS));
-        containersPanel.setBorder(new EmptyBorder(0, 0, 4, 0));
+        containersPanel.setBorder(new EmptyBorder(0, 0, 14, 0));
         containersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         containersPanel.add(containersInfo);
         containersCount = new JLabel("0");
@@ -265,6 +265,21 @@ public class Main extends JFrame {
         modifyPanel.setBorder(new EmptyBorder(0, 0, 4, 0));
         modifyPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         modifyPanel.add(modifyInventory);
+        JLabel modifyDescription = new JLabel(" Adds and removes items from inventory.");
+        modifyDescription.setFont(standardFont);
+        modifyPanel.add(modifyDescription);
+
+        ImageIcon labelsRoll = new ImageIcon("labelsRoll.png");
+        JButton printLabels = new JButton("Print Labels", labelsRoll);
+        printLabels.setFont(boldFont);
+        JPanel printPanel = new JPanel();
+        printPanel.setLayout(new BoxLayout(printPanel, BoxLayout.X_AXIS));
+        printPanel.setBorder(new EmptyBorder(0, 0, 4, 0));
+        printPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        printPanel.add(printLabels);
+        JLabel printDescription = new JLabel(" Calculates TLCs and generates new labels.");
+        printDescription.setFont(standardFont);
+        printPanel.add(printDescription);
 
         //Add everything to the panel
         panel.add(Box.createVerticalGlue());
@@ -272,6 +287,7 @@ public class Main extends JFrame {
         panel.add(tomatoesPanel);
         panel.add(containersPanel);
         panel.add(modifyPanel);
+        panel.add(printPanel);
         panel.add(Box.createVerticalGlue());
 
         //Launch the Window
