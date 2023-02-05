@@ -4,6 +4,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 class Main {
+    private static DateTimeFormatter humanFormat = DateTimeFormatter.ofPattern("MMMM d, uuuu");
     private static String[] trimChars(String input, int num){
         String[] arr = new String[2];
         arr[0] = input.substring(0,num);
@@ -87,51 +88,31 @@ class Main {
         HashMap<String, String> output = new HashMap<>();
         String[] b = trimChars(binData, 8);
         int header = Integer.parseInt(b[0], 2);
+        if(header!=251 && header!=247) return null;
         if(header == 251){
-            output.put("01 - RFID Type", "DSGTIN+");
-            b = trimChars(b[1], 1);
-            boolean plusData = b[0].equals("1");
-            b = trimChars(b[1], 3);
-            int filterValue = Integer.parseInt(b[0], 2);
-            switch(filterValue){
-                case 1:
-                    output.put("02 - Filter Value", "Point of Sale Trade Item");
-                    break;
-                case 2:
-                    output.put("02 - Filter Value", "Full Case for Transport");
-                    break;
-                default:
-                    output.put("02 - Filter Value", "Unknown");
-                    break;
-            }
+            output.put("01 - RFID Type", "DSGTIN+"); // 251 is DSGTIN+
+        } else {
+            output.put("01 - RFID Type", "SGTIN+"); // 247 is SGTIN+
+        }
+        b = trimChars(b[1], 1);
+        boolean plusData = b[0].equals("1");
+        b = trimChars(b[1], 3);
+        int filterValue = Integer.parseInt(b[0], 2);
+        switch(filterValue){
+            case 1:
+                output.put("02 - Filter Value", "Point of Sale Trade Item");
+                break;
+            case 2:
+                output.put("02 - Filter Value", "Full Case for Transport");
+                break;
+            default:
+                output.put("02 - Filter Value", "Unknown");
+        }
+        int countUp = 3;
+        String numerate = "";
+        if(header == 251){
             b = trimChars(b[1], 4);
             int dateIndicator = Integer.parseInt(b[0], 2);
-            switch(dateIndicator){
-                case 0:
-                    output.put("03 - Date Type", "Production date");
-                    break;
-                case 1:
-                    output.put("03 - Date Type", "Packaging date");
-                    break;
-                case 2:
-                    output.put("03 - Date Type", "Best before date");
-                    break;
-                case 3:
-                    output.put("03 - Date Type", "Sell by date");
-                    break;
-                case 4:
-                    output.put("03 - Date Type", "Expiration date");
-                    break;
-                case 5:
-                    output.put("03 - Date Type", "First freeze date");
-                    break;
-                case 6:
-                    output.put("03 - Date Type", "Harvest date");
-                    break;
-                default:
-                    output.put("03 - Date Type", "Unknown");
-                    break;
-            }
             b = trimChars(b[1], 7);
             int year = Integer.parseInt(b[0], 2);
             b = trimChars(b[1], 4);
@@ -139,34 +120,51 @@ class Main {
             b = trimChars(b[1], 5);
             int day = Integer.parseInt(b[0], 2);
             LocalDate date = LocalDate.of(2000+year, month, day);
-            output.put("04 - Date", date.format(DateTimeFormatter.ofPattern("MMMM d, uuuu")));
-            b = trimChars(b[1], 56);
-            String gtin = stringPad(Long.toString(Long.parseLong(b[0],2),16), '0', 14);
-            output.put("05 - GTIN", gtin);
-            b = variLengthDecode(b[1]);
-            if(b == null) return null;
-            output.put("06 - Serial Number", b[0]);
-            if(plusData){
-                int countUp = 7;
-                while(b[1].length()>0 && new BigInteger(b[1],2).compareTo(BigInteger.ZERO)>0){
-                    b = trimChars(b[1], 8);
-                    int ai = Integer.parseInt(Integer.toString(Integer.parseInt(b[0],2), 16));
-                    if(ai == 10){
-                        b = variLengthDecode(b[1]);
-                        if(b == null) return output;
-                        String numerate = stringPad(Integer.toString(countUp++), '0', 2);
-                        output.put(numerate + " - Batch/Lot", b[0]);
-                        continue;
-                    }
-                    return output;
-                }
+            numerate = stringPad(Integer.toString(countUp++), '0', 2);
+            if(dateIndicator>=0 && dateIndicator<=6){
+                String[] dateTypes = {"Production date", "Packaging date", "Best before date", "Sell by date", "Expiration date", "First freeze date", "Harvest date"};
+                output.put(numerate + " - " + dateTypes[dateIndicator], date.format(humanFormat));
+            } else {
+                output.put(numerate + " - Unspecified Date", date.format(humanFormat));
             }
-            return output;
         }
-        if(header == 247){
-            System.out.println("Not yet implemented.");
+        b = trimChars(b[1], 56);
+        String gtin = stringPad(Long.toString(Long.parseLong(b[0],2),16), '0', 14);
+        numerate = stringPad(Integer.toString(countUp++), '0', 2);
+        output.put(numerate + " - GTIN", gtin);
+        b = variLengthDecode(b[1]);
+        if(b == null) return null;
+        numerate = stringPad(Integer.toString(countUp++), '0', 2);
+        output.put(numerate + " - Serial Number", b[0]);
+        if(plusData){
+            int[] dateAIs = {11, 12, 13, 15, 17};
+            String[] dateTypes = {"Production date", "Due date", "Packaging date", "Best before date", "Expiration date"};
+            while(b[1].length()>0 && new BigInteger(b[1],2).compareTo(BigInteger.ZERO)>0){
+                b = trimChars(b[1], 8);
+                int ai = Integer.parseInt(Integer.toString(Integer.parseInt(b[0],2), 16));
+                numerate = stringPad(Integer.toString(countUp++), '0', 2);
+                if(ai == 10){
+                    b = variLengthDecode(b[1]);
+                    if(b == null) return output;
+                    output.put(numerate + " - Batch/Lot", b[0]);
+                    continue;
+                }
+                int dateCheck = Arrays.binarySearch(dateAIs, ai);
+                if(dateCheck >= 0){
+                    b = trimChars(b[1], 7);
+                    int year = Integer.parseInt(b[0], 2);
+                    b = trimChars(b[1], 4);
+                    int month = Integer.parseInt(b[0], 2);
+                    b = trimChars(b[1], 5);
+                    int day = Integer.parseInt(b[0], 2);
+                    LocalDate date = LocalDate.of(2000+year, month, day);
+                    output.put(numerate + " - " + dateTypes[dateCheck], date.format(humanFormat));
+                    continue;
+                }
+                break;
+            }
         }
-        return null;
+        return output;
     }
     public static void main(String[] args){
         Scanner scan = new Scanner(System.in);
