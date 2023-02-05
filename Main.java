@@ -194,6 +194,10 @@ public class Main extends JFrame {
     private Font standardFont;
     private Font boldFont;
 
+    private ArrayList<HashMap<String,String>> lettuceInv = new ArrayList<>();
+    private ArrayList<HashMap<String,String>> tomatoInv = new ArrayList<>();
+    private ArrayList<HashMap<String,String>> containerInv = new ArrayList<>();
+
     public Main(){
         setResizable(true);
         setTitle("SaladMan v0.1");
@@ -312,21 +316,64 @@ public class Main extends JFrame {
                 doneButton.setFont(standardFont);
                 inputPanel.add(doneButton, BorderLayout.SOUTH);
                 doneButton.addActionListener(new ActionListener(){
-                    public void actionPerformed(ActionEvent ae){
+                    public void actionPerformed(ActionEvent bb){
                         String[] inputLines = inputBox.getText().trim().split("\n");
                         ArrayList<HashMap<String,String>> decodedInputs = new ArrayList<>(inputLines.length);
                         for(String k : inputLines) decodedInputs.add(decodeRFID(new BigInteger(k, 16).toString(2)));
-                        inputDialog.dispose();
                         for(HashMap<String,String> h : decodedInputs){
                             String[] keys = h.keySet().stream().sorted().toList().toArray(new String[0]);
                             for(String key : keys){
                                 System.out.println(key + ": " + h.get(key));
                             }
-                            System.out.println("-----------------");
+                            System.out.println("-------------");
+                            String firstTry = h.get("03 - GTIN");
+                            String secondTry = h.get("04 - GTIN");
+                            if(firstTry != null){
+                                String gtindy = firstTry;
+                                if(gtindy.equals("10810055931016")) lettuceInv.add(h);
+                                if(gtindy.equals("10810055931023")) tomatoInv.add(h);
+                                if(gtindy.equals("10810055931030")) containerInv.add(h);
+                                continue;
+                            }
+                            if(secondTry != null){
+                                String gtindy = secondTry;
+                                if(gtindy.equals("10810055931016")) lettuceInv.add(h);
+                                if(gtindy.equals("10810055931023")) tomatoInv.add(h);
+                                if(gtindy.equals("10810055931030")) containerInv.add(h);
+                            }
                         }
+                        lettuceCount.setText(Integer.toString(lettuceInv.size()));
+                        tomatoesCount.setText(Integer.toString(tomatoInv.size()));
+                        containersCount.setText(Integer.toString(containerInv.size()));
+                        inputDialog.dispose();
+                        printLabels.setEnabled(true);
+                        me.getContentPane().repaint();
                     }
                 });
                 inputDialog.setVisible(true);
+            }
+        });
+        printLabels.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+                if(!printLabels.isEnabled()) return;
+                for(int i=1; i<=1000; i++){
+                    System.out.println("1");
+                    System.out.println("810055939015");
+                    System.out.println("230301");
+                    System.out.println("ZXI" + stringPad(Integer.toString(i), '0', 6));
+                    System.out.println(i/25);
+                    try{
+                        Thread.sleep(250);
+                    } catch (Exception e){};
+                }
+                for(int i=1; i<=40; i++){
+                    System.out.println("2");
+                    System.out.println("10810055939012");
+                    System.out.println("ZXC" + stringPad(Integer.toString(i), '0', 6));
+                    try{
+                        Thread.sleep(250);
+                    } catch (Exception e){};
+                }
             }
         });
 
