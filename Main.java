@@ -1,9 +1,14 @@
 import java.util.*;
+import java.awt.Component;
 import java.math.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
-class Main {
+import java.awt.Font;
+
+public class Main extends JFrame {
     private static DateTimeFormatter humanFormat = DateTimeFormatter.ofPattern("MMMM d, uuuu");
     private static String[] trimChars(String input, int num){
         String[] arr = new String[2];
@@ -167,14 +172,99 @@ class Main {
         return output;
     }
     public static void main(String[] args){
-        Scanner scan = new Scanner(System.in);
-        System.out.print("Hexadecimal Data: ");
-        String input = scan.nextLine();
-        scan.close();
-        HashMap<String,String> map = decodeRFID(new BigInteger(input, 16).toString(2));
-        String[] keys = map.keySet().stream().sorted().toList().toArray(new String[0]);
-        for(String key : keys){
-            System.out.println(key + ": " + map.get(key));
+        // Scanner scan = new Scanner(System.in);
+        // System.out.print("Hexadecimal Data: ");
+        // String input = scan.nextLine();
+        // scan.close();
+        // HashMap<String,String> map = decodeRFID(new BigInteger(input, 16).toString(2));
+        // String[] keys = map.keySet().stream().sorted().toList().toArray(new String[0]);
+        // for(String key : keys){
+        //     System.out.println(key + ": " + map.get(key));
+        // }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Main();
+            }
+        });
+    }
+
+    private JLabel lettuceCount;
+    private JLabel tomatoesCount;
+    private JLabel containersCount;
+    private Font standardFont;
+    private Font boldFont;
+
+    public Main(){
+        setResizable(true);
+        setTitle("SaladMan v0.1");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(720, 720);
+        setLocationRelativeTo(null);
+        LookAndFeel defaultLF = UIManager.getLookAndFeel();
+        try{
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            try{
+                UIManager.setLookAndFeel(defaultLF);
+            } catch (Exception f) {
+                System.out.println("========= ERROR =========");
+                System.out.println("Something has gone wrong with Java's Look-And-Feel system.");
+                System.out.println("I tried to tell Java to use your system's inbuilt L&F, but Java spat out an exception.");
+                System.out.println("So in response, I tried to set the L&F back to Java's default choice.");
+                System.out.println("But somehow, some way, Java spat out an exception while trying to do THAT too!");
+                System.out.println("I suspect that something's wrong with your JRE. My code is sound.");
+                System.out.println("     - Joey Sodergren");
+                System.exit(1);
+            }
         }
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        add(panel);
+
+        //Define Body Components
+        JLabel lettuceInfo = new JLabel("Lettuce cases in inventory: ");
+        standardFont = lettuceInfo.getFont().deriveFont(14.0f);
+        boldFont = standardFont.deriveFont(Font.BOLD);
+        lettuceInfo.setFont(boldFont);
+        JPanel lettucePanel = new JPanel();
+        lettucePanel.setLayout(new BoxLayout(lettucePanel, BoxLayout.X_AXIS));
+        lettucePanel.setBorder(new EmptyBorder(0, 0, 4, 0));
+        lettucePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lettucePanel.add(lettuceInfo);
+        lettuceCount = new JLabel("0");
+        lettuceCount.setFont(standardFont);
+        lettucePanel.add(lettuceCount);
+
+        JLabel tomatoesInfo = new JLabel("Tomato cases in inventory: ");
+        tomatoesInfo.setFont(boldFont);
+        JPanel tomatoesPanel = new JPanel();
+        tomatoesPanel.setLayout(new BoxLayout(tomatoesPanel, BoxLayout.X_AXIS));
+        tomatoesPanel.setBorder(new EmptyBorder(0, 0, 4, 0));
+        tomatoesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        tomatoesPanel.add(tomatoesInfo);
+        tomatoesCount = new JLabel("0");
+        tomatoesCount.setFont(standardFont);
+        tomatoesPanel.add(tomatoesCount);
+
+        JLabel containersInfo = new JLabel("Container cases in inventory: ");
+        containersInfo.setFont(boldFont);
+        JPanel containersPanel = new JPanel();
+        containersPanel.setLayout(new BoxLayout(containersPanel, BoxLayout.X_AXIS));
+        containersPanel.setBorder(new EmptyBorder(0, 0, 4, 0));
+        containersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        containersPanel.add(containersInfo);
+        containersCount = new JLabel("0");
+        containersCount.setFont(standardFont);
+        containersPanel.add(containersCount);
+
+        //Add everything to the panel
+        panel.add(Box.createVerticalGlue());
+        panel.add(lettucePanel);
+        panel.add(tomatoesPanel);
+        panel.add(containersPanel);
+        panel.add(Box.createVerticalGlue());
+
+        //Launch the Window
+        setVisible(true);
     }
 }
