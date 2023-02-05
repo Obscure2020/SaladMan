@@ -13,24 +13,8 @@ Product Name: SaladMan
 - Automatic Label Generation and Printing 
 - Reads DSGTIN+ and SGTIN+ RFID Data Automatically
 
-## Getting Started
-- Provide step-by-step instructions on how to install and use the software
-- Include screenshots or demo videos to help illustrate the process
-
-## Pricing and Availability
-- Mention the pricing of your software and any available discounts or promotions
-- State the platforms or devices on which the software is available
-
-## Contribute
-- Explain how others can contribute to the development of your software
-- Provide guidelines for submitting bug reports and feature requests
-
-## License
-- Include information on the license under which your software is distributed
-- Link to the full text of the license
-
-## Contact
-- Provide a way for others to get in touch with you or the development team
-- Include your email address, social media handles, or a contact form link
-
-By following this template and customizing it to suit your specific needs, you can create a clear and concise introduction to your new piece of software on GitHub.
+Demonstration Video: 
+  ## Video goes here 
+ 
+Presentation Video: 
+  ## Presentation video goes here
