@@ -14,7 +14,7 @@ Product Name: SaladMan
 - Reads DSGTIN+ and SGTIN+ RFID Data Automatically
 
 ## Demonstration Video
-- Video Link goes here
+- https://youtu.be/Wb0ASjn2UnU
  
 ## Presentation Video 
 - https://youtu.be/jLISxfJ545s
